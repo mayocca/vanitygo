@@ -1,19 +1,24 @@
 package main
 
 import (
-	"encoding/hex"
 	"fmt"
-	"vanitygo/mnemonicgenerator"
+
+	"github.com/tyler-smith/go-bip32"
+	"github.com/tyler-smith/go-bip39"
 )
 
 func main() {
-	// mnemonic := mnemonicgenerator.GetMnemonic()
-	mnemonic := "gather absent remind casual spray buddy raise faith useless load require lucky truly venture chaos angle immune lava bubble rose trophy large miracle churn"
+
+	entropy, _ := bip39.NewEntropy(256)
+	mnemonic, _ := bip39.NewMnemonic(entropy)
+
 	fmt.Println(mnemonic)
-	pubkey := mnemonicgenerator.GetMasterKey(mnemonic)
-	// fmt.Println(pubkey)
-	address := mnemonicgenerator.GetAddress(pubkey)
-	fmt.Println(address.PublicKey())
-	ether := hex.EncodeToString(address.Serialize())
-	fmt.Println(ether)
+
+	seed := bip39.NewSeed(mnemonic, "")
+
+	masterKey, _ := bip32.NewMasterKey(seed)
+
+	fmt.Println(masterKey.String())
+	fmt.Println(masterKey.PublicKey().String())
+
 }
